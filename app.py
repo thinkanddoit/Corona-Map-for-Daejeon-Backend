@@ -1,12 +1,28 @@
-from urllib.request import urlopen
+import requests
 from bs4 import BeautifulSoup
 
-html = urlopen("https://www.daejeon.go.kr/corona19/index.do?menuId=0008")
+webpage = requests.get("https://www.daejeon.go.kr/corona19/index.do?menuId=0008")
+soup = BeautifulSoup(webpage.content,"html.parser")
 
-bsObject = BeautifulSoup(html, "html.parser")
-#page = soup.find('p').getText()
-for page in bsObject.find_all('tr'):
-    pages=page.getText()
-    print(pages)
+# print(soup)
 
-#content > div > div > div:nth-child(1) > div > div.table_scroll > table > tbody > tr:nth-child(23) > td:nth-child(4)")
+#태그 탐색하기
+# print(soup.p) 첫번째 p태그
+# print(soup.p.string) 텍스트 가져오기
+
+#트리구조 사용하기
+# for child in soup.ul.children:
+#     print(child)
+# for parent in soup.ul.parents:
+#     print(parent)
+
+#find_all
+# print(soup.find_all("p"))
+trs = soup.tbody.find_all('tr')
+for i, tr in enumerate(trs):
+    tds = tr.find_all('td')
+    for j, td in enumerate(tds):
+        ps = td.find_all('p')
+        print(ps[0].text)
+
+# document.querySelector("#content > div > div > div:nth-child(1) > div > div.table_scroll > table > tbody > tr:nth-child(1) > td:nth-child(5) > p")
