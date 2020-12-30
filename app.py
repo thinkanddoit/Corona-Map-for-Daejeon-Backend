@@ -1,5 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
+import json
+import os
+
+#app.py 파일의 위치
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 webpage = requests.get("https://www.daejeon.go.kr/corona19/index.do?menuId=0008")
 soup = BeautifulSoup(webpage.content,"html.parser")
@@ -18,11 +23,17 @@ soup = BeautifulSoup(webpage.content,"html.parser")
 
 #find_all
 # print(soup.find_all("p"))
+
+data={}
+
 trs = soup.tbody.find_all('tr')
 for i, tr in enumerate(trs):
     tds = tr.find_all('td')
     for j, td in enumerate(tds):
         ps = td.find_all('p')
         print(ps[0].text)
+        data["d"] = ps[0].text
 
-# document.querySelector("#content > div > div > div:nth-child(1) > div > div.table_scroll > table > tbody > tr:nth-child(1) > td:nth-child(5) > p")
+
+with open(os.path.join(BASE_DIR, 'result.json'), 'w+') as json_file:
+    json.dump(data, json_file)
